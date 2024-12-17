@@ -1,0 +1,8 @@
+C:\Users\Administrator\source\repos\dotnet project maui\dotnet project maui\wwwroot\css\app.css
+C:\Users\Administrator\source\repos\dotnet project maui\dotnet project maui\wwwroot\index.html
+C:\Users\Administrator\source\repos\dotnet project maui\dotnet project maui\wwwroot\css\bootstrap\bootstrap.min.css
+C:\Users\Administrator\source\repos\dotnet project maui\dotnet project maui\wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\css\app.css
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\index.html
