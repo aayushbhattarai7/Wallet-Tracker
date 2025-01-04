@@ -1,0 +1,85 @@
+@page "/register"
+@using Wallet_Tracker.Components.Layout
+@using Wallet_Tracker.Models
+@layout FirstLayout
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+
+<div class="flex justify-center">
+    <div class="shadow-2xl p-6 rounded-lg bg-blue-100" style="width: 400px;">
+        <h3 class="text-center text-xl font-bold text-blue-800 mb-6">Register</h3>
+
+        <div class="mb-4">
+            <label for="username" class="block text-blue-700 font-medium mb-2">Username</label>
+            <input id="username" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterUsername" placeholder="Enter your username" />
+        </div>
+
+        <div class="mb-4">
+            <label for="password" class="block text-blue-700 font-medium mb-2">Password</label>
+            <input id="password" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterPassword" placeholder="Enter your password" type="password" />
+        </div>
+
+        <div class="mb-4">
+            <label for="email" class="block text-blue-700 font-medium mb-2">Email</label>
+            <input id="email" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterEmail" placeholder="Enter your email" type="email" />
+        </div>
+
+        <div class="mt-4">
+            <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" @onclick="RegisterPage">Register</button>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="text-blue-500 hover:underline">Already have an account? Login</a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <div class="mt-4 p-4 rounded-lg @((Message.Contains("successful") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"))" role="alert">
+                @Message
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string RegisterUsername = "";
+    private string RegisterPassword = "";
+    private string RegisterEmail = "";
+    private string Message = "";
+
+    private List<User> Users = new();
+
+    protected override void OnInitialized()
+    {
+        Users = UserService.LoadUsers();
+    }
+
+    private void RegisterPage()
+    {
+        if (string.IsNullOrWhiteSpace(RegisterUsername) || string.IsNullOrWhiteSpace(RegisterPassword))
+        {
+            Message = "Username and password are required.";
+            return;
+        }
+
+        if (Users.Any(u => u.Username == RegisterUsername))
+        {
+            Message = "Username already exists.";
+            return;
+        }
+
+        // creating new user and hashing that user's password
+        var newUser = new User
+            {
+                Username = RegisterUsername,
+                Password = UserService.HashPassword(RegisterPassword),
+                Email = RegisterEmail
+            };
+
+        Users.Add(newUser);
+        UserService.SaveUsers(Users);
+
+        Message = "Registration successful. Redirecting to login...";
+        Task.Delay(2000).ContinueWith(_ => NavigationManager.NavigateTo("/"));
+    }
+}
