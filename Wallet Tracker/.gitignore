@@ -1,1 +1,19 @@
-.vs/
+# Ignore build and debug folders
+bin/
+obj/
+
+# Ignore WebView2 runtime and cache
+*.WebView2/
+
+# Ignore system and IDE files
+*.vs/
+*.user
+*.suo
+*.cache
+*.log
+
+# Ignore other temporary and generated files
+*.dll
+*.exe
+*.pdb
+*.tmp
