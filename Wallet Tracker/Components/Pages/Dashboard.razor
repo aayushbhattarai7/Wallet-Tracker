@@ -9,216 +9,204 @@
         <h2>Welcome, <span class="text-primary">@UserService.loggedInUserName</span>!</h2>
         <p class="text-muted animate__animated animate__bounce">Track your finances effortlessly with a streamlined dashboard.</p>
     </div>
-
+    <div class="mb-4">
+        <input type="text" class="form-control" placeholder="Search Credit, Debit, or Debt..." @bind="SearchQuery" />
+    </div>
     <div class="row g-4">
-        <!-- Credit Section -->
-        <div class="col-md-12">
-            <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="text-success">Credit</h4>
-                    <p class="fs-5 fw-bold">@CurrentUser?.Credit</p>
-                </div>
-                <div>
-                    <button class="btn btn-outline-success" @onclick="ShowInputField">Add Credit</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Debit Section -->
-        <div class="col-md-12">
-            <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="text-dark">Debit</h4>
-                    <p class="fs-5 fw-bold">@CurrentUser?.Debit</p>
-                </div>
-                <div>
-                    <button class="btn btn-outline-dark" @onclick="ShowInputFieldDebit">Add Debit</button>
+        @if (ShouldShowSection("credit"))
+        {
+            <div class="col-md-12">
+                <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-success">Credit</h4>
+                        <p class="fs-5 fw-bold"> @ShowCurrency  @CurrentUser?.Credit</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-success" @onclick="ShowInputField">Add Credit</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+      
+        @if (ShouldShowSection("debit"))
+        {
+            <div class="col-md-12">
+                <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-dark">Debit</h4>
+                        <p class="fs-5 fw-bold">@ShowCurrency @CurrentUser?.Debit</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-dark" @onclick="ShowInputFieldDebit">Add Debit</button>
+                    </div>
+                </div>
+            </div>
+        }
 
-        <!-- Debt Section -->
-        <div class="col-md-12">
-            <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="text-danger">Debt</h4>
-                    <p class="fs-5 fw-bold">@CurrentUser?.Debt</p>
-                    <p class="fs-5 fw-bold">Cleared Debt: @CurrentUser?.ClearedDebt</p>
-                    <p class="text-muted">Total Debt Taken: @CurrentUser?.TotalDebt</p>
-                </div>
-                <div>
-                    <button class="btn btn-outline-danger me-2" @onclick="ShowInputFieldDept">Add Debt</button>
-                    @if(CurrentUser?.Debt > 0)
-                    {
-                        <button class="btn btn-outline-secondary" @onclick="ShowInputFieldClearDept">Clear Debt</button>
-                    }
+
+        @if (ShouldShowSection("debt"))
+        {
+            <div class="col-md-12">
+                <div class="p-4 rounded bg-light shadow-sm d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-danger">Debt</h4>
+                        <p class="fs-5 fw-bold">Remain Debt: @ShowCurrency @CurrentUser?.Debt</p>
+                        <p class="fs-5 fw-bold">Cleared Debt: @ShowCurrency @CurrentUser?.ClearedDebt</p>
+                        <p class="text-muted">Total Debt Taken: @ShowCurrency @CurrentUser?.TotalDebt</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-danger me-2" @onclick="ShowInputFieldDept">Add Debt</button>
+                        @if (CurrentUser?.Debt > 0)
+                        {
+                            <button class="btn btn-outline-secondary" @onclick="ShowInputFieldClearDept">Clear Debt</button>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+
+        }
+    
+       
     </div>
 
-    <!-- Input Forms -->
+ 
     @if (IsInputVisible)
     {
-        <div class="mt-4">
-            <h5>Add Credit</h5>
-            <div class="bg-white p-4 rounded shadow-sm">
-                <input type="number" class="form-control mb-3" @bind="NewCredit" placeholder="Enter credit amount">
-                <select @bind="Tag" id="tag" >
-                    <option value="">Select a Tag</option>
-                    <option value="Salary">
-                        Salary
-                    </option>
-                    <option value="Groceries">
-                        Groceries
-                    </option>
-                    <option value="Entertainment">
-                        Entertainment
-                    </option>
-                    <option value="Bills">
-                        Bills
-                    </option>
-                    <option value="Shopping">
-                        Shopping
-                    </option>
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-                <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary me-2" @onclick="SubmitCredit">Submit</button>
-                    <button class="btn btn-secondary" @onclick="HideInputField">Cancel</button>
+        <div class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="creditModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="creditModalLabel">Add Credit</h5>
+                        <button type="button" class="btn-close" @onclick="HideInputField" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" class="form-control mb-3" @bind="NewCredit" placeholder="Enter credit amount">
+                        <select @bind="Tag" class="form-select mb-3">
+                            <option value="">Select a Tag</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="text-danger mt-2">@ErrorMessage</div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="HideInputField">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SubmitCredit">Submit</button>
+                    </div>
                 </div>
-                @if (!string.IsNullOrEmpty(ErrorMessage))
-                {
-                    <div class="text-danger mt-2">@ErrorMessage</div>
-                }
             </div>
         </div>
     }
 
     @if (IsInputVisibleDebit)
     {
-        <div class="mt-4">
-            <h5>Add Debit</h5>
-            <div class="bg-white p-4 rounded shadow-sm">
-                <input type="number" class="form-control mb-3" @bind="NewDebit" placeholder="Enter debit amount">
-                <select @bind="Tag" id="tag">
-                    <option value="">Select a Tag</option>
-                    <option value="Salary">
-                        Salary
-                    </option>
-                    <option value="Groceries">
-                        Groceries
-                    </option>
-                    <option value="Entertainment">
-                        Entertainment
-                    </option>
-                    <option value="Bills">
-                        Bills
-                    </option>
-                    <option value="Shopping">
-                        Shopping
-                    </option>
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-                <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary me-2" @onclick="SubmitDebit">Submit</button>
-                    <button class="btn btn-secondary" @onclick="HideInputFieldDebit">Cancel</button>
+        <div class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="debitModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="debitModalLabel">Add Debit</h5>
+                        <button type="button" class="btn-close" @onclick="HideInputFieldDebit" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" class="form-control mb-3" @bind="NewDebit" placeholder="Enter debit amount">
+                        <select @bind="Tag" class="form-select mb-3">
+                            <option value="">Select a Tag</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
+                        @if (!string.IsNullOrEmpty(ErrorMessageDebit))
+                        {
+                            <div class="text-danger mt-2">@ErrorMessageDebit</div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="HideInputFieldDebit">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SubmitDebit">Submit</button>
+                    </div>
                 </div>
-                @if (!string.IsNullOrEmpty(ErrorMessageDebit))
-                {
-                    <div class="text-danger mt-2">@ErrorMessageDebit</div>
-                }
             </div>
         </div>
     }
 
     @if (IsInputVisibleDebt)
     {
-        <div class="mt-4">
-            <h5>Add Debt</h5>
-            <div class="bg-white p-4 rounded shadow-sm">
-                <input type="number" class="form-control mb-3" @bind="NewDebt" placeholder="Enter debt amount">
-                <select @bind="Tag" id="tag">
-                    <option value="">Select a Tag</option>
-                    <option value="Salary">
-                        Salary
-                    </option>
-                    <option value="Groceries">
-                        Groceries
-                    </option>
-                    <option value="Entertainment">
-                        Entertainment
-                    </option>
-                    <option value="Bills">
-                        Bills
-                    </option>
-                    <option value="Shopping">
-                        Shopping
-                    </option>
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-                <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary me-2" @onclick="SubmitDebt">Submit</button>
-                    <button class="btn btn-secondary" @onclick="HideInputFieldDebt">Cancel</button>
+        <div class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="debtModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="debtModalLabel">Add Debt</h5>
+                        <button type="button" class="btn-close" @onclick="HideInputFieldDebt" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" class="form-control mb-3" @bind="NewDebt" placeholder="Enter debt amount">
+                        <select @bind="Tag" class="form-select mb-3">
+                            <option value="">Select a Tag</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
+                        @if (!string.IsNullOrEmpty(ErrorMessageDebt))
+                        {
+                            <div class="text-danger mt-2">@ErrorMessageDebt</div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="HideInputFieldDebt">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SubmitDebt">Submit</button>
+                    </div>
                 </div>
-                @if (!string.IsNullOrEmpty(ErrorMessageDebt))
-                {
-                    <div class="text-danger mt-2">@ErrorMessageDebt</div>
-                }
             </div>
         </div>
     }
 
     @if (IsInputVisibleClearDebt)
     {
-        <div class="mt-4">
-            <h5>Clear Debt</h5>
-            <div class="bg-white p-4 rounded shadow-sm">
-                <input type="number" class="form-control mb-3" @bind="Credit" placeholder="Enter clearing amount">
-                <select @bind="Tag" id="tag">
-                    <option value="">Select a Tag</option>
-                    <option value="Salary">
-                        Salary
-                    </option>
-                    <option value="Groceries">
-                        Groceries
-                    </option>
-                    <option value="Entertainment">
-                        Entertainment
-                    </option>
-                    <option value="Bills">
-                        Bills
-                    </option>
-                    <option value="Shopping">
-                        Shopping
-                    </option>
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-                <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
-                <div class="d-flex justify-content-end">
-
-                    <button class="btn btn-primary me-2" @onclick="ClearDebtBalance">Submit</button>
-                    <button class="btn btn-secondary" @onclick="HideInputFieldClearDept">Cancel</button>
+        <div class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="clearDebtModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clearDebtModalLabel">Clear Debt</h5>
+                        <button type="button" class="btn-close" @onclick="HideInputFieldClearDept" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" class="form-control mb-3" @bind="Credit" placeholder="Enter clearing amount">
+                        <select @bind="Tag" class="form-select mb-3">
+                            <option value="">Select a Tag</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="form-control mb-3" @bind="Remarks" placeholder="Remarks (Optional)">
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="text-danger mt-2">@ErrorMessage</div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="HideInputFieldClearDept">Cancel</button>
+                        <button class="btn btn-primary" @onclick="ClearDebtBalance">Submit</button>
+                    </div>
                 </div>
-                @if (!string.IsNullOrEmpty(ErrorMessage))
-                {
-                    <div class="text-danger mt-2">@ErrorMessage</div>
-                }
             </div>
         </div>
     }
@@ -257,7 +245,15 @@
     private void HideInputFieldDebit() => IsInputVisibleDebit = false;
     private void HideInputFieldDebt() => IsInputVisibleDebt = false;
     private void HideInputFieldClearDept() => IsInputVisibleClearDebt = false;
+    public string ShowCurrency => CurrentUser.Currency == "USD" ? "$" : "Rs";
 
+    private string SearchQuery { get; set; } = string.Empty;
+
+    private bool ShouldShowSection(string sectionName)
+    {
+        return string.IsNullOrEmpty(SearchQuery) ||
+               sectionName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase);
+    }
 
     private void SubmitCredit()
     {

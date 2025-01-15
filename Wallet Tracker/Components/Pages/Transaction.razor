@@ -3,10 +3,11 @@
 @inject UserService UserService
 @inject TransactionService TransactionService
 
-<div class="d-flex justify-content-between">
-    <div>
-        <!-- Dropdown for Tag -->
-        <select @onchange="HandleTagChange">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 p-4 bg-light rounded shadow-sm">
+    <!-- Dropdown for Tag -->
+    <div class="mb-3 mb-md-0">
+        <label for="tagSelect" class="form-label">Tag</label>
+        <select id="tagSelect" class="form-select" @onchange="HandleTagChange">
             <option value="">Select a Tag</option>
             <option value="Salary">Salary</option>
             <option value="Groceries">Groceries</option>
@@ -17,58 +18,58 @@
         </select>
     </div>
 
-    <div>
-        <!-- Dropdown for Transaction Type -->
-        <select @onchange="HandleTypeChange">
+    <!-- Dropdown for Transaction Type -->
+    <div class="mb-3 mb-md-0">
+        <label for="typeSelect" class="form-label">Transaction Type</label>
+        <select id="typeSelect" class="form-select" @onchange="HandleTypeChange">
             <option value="">Select Type</option>
             <option value="Debit">Debit</option>
             <option value="Credit">Credit</option>
-            <option value="TakenDebt">Debt</option>
-            <option value="ClearedDebt">Debt</option>
+            <option value="TakenDebt">TakenDebt</option>
+            <option value="ClearedDebt">ClearedDebt</option>
         </select>
     </div>
 
-    <div>
-        <!-- Date Range Inputs -->
-        <label>From:</label>
-        <input type="date" @onchange="HandleFromDateChange" />
-
-        <label>To:</label>
-        <input type="date" @onchange="HandleToDateChange" />
+    <!-- Date Range Inputs -->
+    <div class="mb-3 mb-md-0">
+        <label class="form-label">Date Range</label>
+        <div class="d-flex gap-2">
+            <div>
+                <label for="fromDate" class="form-label visually-hidden">From:</label>
+                <input type="date" id="fromDate" class="form-control" @onchange="HandleFromDateChange" />
+            </div>
+            <div>
+                <label for="toDate" class="form-label visually-hidden">To:</label>
+                <input type="date" id="toDate" class="form-control" @onchange="HandleToDateChange" />
+            </div>
+        </div>
     </div>
 
-    <div>
-        <h3>Transaction History</h3>
-
-        <!-- Sort by Amount -->
-        <button class="btn btn-link p-0 text-decoration-none text-dark fw-bold d-flex align-items-center" @onclick="SortByAmount">
-            Sort by
+    <!-- Transaction History Section -->
+    <div class="mb-3 mb-md-0">
+        <h5 class="fw-bold">Transaction History</h5>
+        <button class="btn btn-outline-secondary d-flex align-items-center gap-2" @onclick="SortByAmount">
+            <span>Sort by</span>
             @if (isSortAmountAscending)
             {
-                <span class="ms-2">
-                    <i class="bi bi-arrow-down"></i> 
-                </span>
+                <i class="bi bi-arrow-down-circle-fill"></i>
             }
             else
             {
-                <span class="ms-2">
-                    <i class="bi bi-arrow-up"></i> 
-                </span>
+                <i class="bi bi-arrow-up-circle-fill"></i>
             }
         </button>
-
     </div>
 
-    <div class="col-md-6">
-        <input type="text"
-               class="shadow-sm"
-               placeholder="Search..."
-               @bind="searchParams"
-               @oninput="ApplyFilters"
-               @onkeypress="HandleKeyPress" />
+    <!-- Search Input -->
+    <div class="col-md-6 mb-3 mb-md-0">
+        <label for="searchInput" class="form-label">Search Transactions</label>
+        <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Search..." @bind="searchParams" @oninput="ApplyFilters" @onkeypress="HandleKeyPress" />
     </div>
-    <p>Total Transactions: @filteredTransactions.Count</p>
 </div>
+
+<p class="fw-bold">Total Transactions: @filteredTransactions.Count</p>
+
 
 @if (Transactions?.Count > 0)
 {

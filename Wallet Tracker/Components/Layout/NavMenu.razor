@@ -1,9 +1,11 @@
 ﻿@inject UserService UserService
 @inject NavigationManager NavigationManager
 @inject TransactionService TransactionService
-<div class="top-row navbar navbar-expand-lg navbar-dark bg-primary shadow">
+
+<div class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-white" href="#">WalletTracker</a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -16,11 +18,11 @@
                 </li>
                 <li class="nav-item">
                     <NavLink class="nav-link text-white nav-hover" href="transaction" Match="NavLinkMatch.All">
-                        Transaction
+                        Transactions
                     </NavLink>
                 </li>
                 <li class="nav-item">
-                    <NavLink class="nav-link text-white nav-hover" Match="NavLinkMatch.All" @onclick="Logout">
+                    <NavLink class="nav-link text-white nav-hover" Match="NavLinkMatch.All" @onclick="OpenLogoutPopUps">
                         Logout
                     </NavLink>
                 </li>
@@ -29,63 +31,91 @@
     </div>
 </div>
 
+<!-- Confirmation Logout Modal -->
+@if (OpenLogoutPopUp)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" @onclick="CloseLogoutPopUp" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to log out?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseLogoutPopUp">Cancel</button>
+                    <button class="btn btn-danger" @onclick="Logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <style>
-    /* Bigger navbar styling */
     .navbar {
-        padding: 1rem 1.5rem; /* Increase vertical and horizontal padding */
-        font-size: 1.1rem; /* Slightly increase font size */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Adjust brand styling for a larger look */
     .navbar-brand {
-        font-size: 2rem; /* Increase brand font size */
-        letter-spacing: 1px;
+        font-size: 2.2rem;
+        letter-spacing: 1.5px;
     }
 
-    /* Navbar links hover effect */
     .nav-hover {
         position: relative;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
     }
 
-    .nav-hover:hover {
-        color: orange !important; /* Hover text color (orange) */
-        text-shadow: 1px 1px 5px rgba(128, 128, 128, 0.8); /* Grayish text shadow effect */
-    }
+        .nav-hover:hover {
+            color: #FF9800;
+            text-shadow: 1px 1px 5px rgba(128, 128, 128, 0.8);
+        }
 
-    /* Underline effect on hover */
-    .nav-hover::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        background-color: orange; /* Orange underline */
-        bottom: 0;
-        left: 50%;
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
-    }
+        .nav-hover::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #FF9800;
+            bottom: 0;
+            left: 50%;
+            transition: width 0.3s ease;
+            transform: translateX(-50%);
+        }
 
-    .nav-hover:hover::after {
-        width: 100%; /* Expand underline on hover */
-        background-color: gray; /* Change underline to gray on hover */
-    }
+        .nav-hover:hover::after {
+            width: 100%;
+            background-color: #FF5722;
+        }
 
-    /* Toggler button */
     .navbar-toggler-icon {
         filter: invert(1);
     }
 
-    /* Active nav-link styling */
     .nav-link.active {
-        color: yellow !important; /* Active link color */
-        font-weight: bold; /* Bold active link */
-        text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.5); /* Optional: active link text shadow */
+        color: #FFC107 !important;
+        font-weight: bold;
+        text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.5);
     }
 </style>
 
 @code {
+    private bool OpenLogoutPopUp { get; set; } = false;
+
+    private void OpenLogoutPopUps()
+    {
+        OpenLogoutPopUp = true;
+    }
+
+    private void CloseLogoutPopUp()
+    {
+        OpenLogoutPopUp = false;
+    }
+
     private void Logout()
     {
         TransactionService.ResetDebit(UserService.loggedInUserName);

@@ -24,6 +24,16 @@
             <input id="email" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterEmail" placeholder="Enter your email" type="email" />
         </div>
 
+        <div class="mb-4">
+            <label for="currency" class="block text-blue-700 font-medium mb-2">Currency</label>
+            <select id="currency" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="currency">
+                <option value="" disabled selected hidden>Select your currency</option>
+                <option value="NPR">NPR</option>
+                <option value="USD">USD</option>
+            </select>
+        </div>
+
+
         <div class="mt-4">
             <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" @onclick="RegisterPage">Register</button>
         </div>
@@ -45,6 +55,7 @@
     private string RegisterUsername = "";
     private string RegisterPassword = "";
     private string RegisterEmail = "";
+    private string currency = "";
     private string Message = "";
 
     private List<User> Users = new();
@@ -73,7 +84,8 @@
             {
                 Username = RegisterUsername,
                 Password = UserService.HashPassword(RegisterPassword),
-                Email = RegisterEmail
+                Email = RegisterEmail,
+                Currency = currency
             };
 
         Users.Add(newUser);

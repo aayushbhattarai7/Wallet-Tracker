@@ -12,7 +12,7 @@ namespace Wallet_Tracker.Models
         public required string Username { get; set; }
         public required string Password { get; set; }
         public required string Email { get; set; }
-
+        public required string Currency { get; set; }
         public int Credit { get; set; } = 0;
 
         public int Debit { get; set; } = 0;
