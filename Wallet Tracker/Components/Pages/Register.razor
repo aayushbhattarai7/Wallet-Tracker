@@ -5,46 +5,45 @@
 @inject UserService UserService
 @inject NavigationManager NavigationManager
 
-<div class="flex justify-center">
-    <div class="shadow-2xl p-6 rounded-lg bg-blue-100" style="width: 400px;">
-        <h3 class="text-center text-xl font-bold text-blue-800 mb-6">Register</h3>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(135deg, #4caf50, #66bb6a);">
+    <div class="border rounded p-4" style="width: 380px; background-color: #ffffffcc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+        <h3 class="text-center mb-4 text-success" style="font-weight: bold; letter-spacing: 1px;">Register</h3>
 
-        <div class="mb-4">
-            <label for="username" class="block text-blue-700 font-medium mb-2">Username</label>
-            <input id="username" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterUsername" placeholder="Enter your username" />
+        <div class="mb-3">
+            <label for="username" class="form-label text-secondary" style="font-size: 0.9rem;">Username</label>
+            <input id="username" class="form-control rounded-pill px-3" @bind="RegisterUsername" placeholder="Enter your username" style="background-color: #f1f8e9; border-color: #c8e6c9;" />
         </div>
 
-        <div class="mb-4">
-            <label for="password" class="block text-blue-700 font-medium mb-2">Password</label>
-            <input id="password" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterPassword" placeholder="Enter your password" type="password" />
+        <div class="mb-3">
+            <label for="password" class="form-label text-secondary" style="font-size: 0.9rem;">Password</label>
+            <input id="password" class="form-control rounded-pill px-3" @bind="RegisterPassword" placeholder="Enter your password" type="password" style="background-color: #f1f8e9; border-color: #c8e6c9;" />
         </div>
 
-        <div class="mb-4">
-            <label for="email" class="block text-blue-700 font-medium mb-2">Email</label>
-            <input id="email" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="RegisterEmail" placeholder="Enter your email" type="email" />
+        <div class="mb-3">
+            <label for="email" class="form-label text-secondary" style="font-size: 0.9rem;">Email</label>
+            <input id="email" class="form-control rounded-pill px-3" @bind="RegisterEmail" placeholder="Enter your email" type="email" style="background-color: #f1f8e9; border-color: #c8e6c9;" />
         </div>
 
-        <div class="mb-4">
-            <label for="currency" class="block text-blue-700 font-medium mb-2">Currency</label>
-            <select id="currency" class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" @bind="currency">
+        <div class="mb-3">
+            <label for="currency" class="form-label text-secondary" style="font-size: 0.9rem;">Currency</label>
+            <select id="currency" class="form-control rounded-pill px-3" @bind="currency" style="background-color: #f1f8e9; border-color: #c8e6c9;">
                 <option value="" disabled selected hidden>Select your currency</option>
                 <option value="NPR">NPR</option>
                 <option value="USD">USD</option>
             </select>
         </div>
 
-
-        <div class="mt-4">
-            <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" @onclick="RegisterPage">Register</button>
+        <div class="d-grid">
+            <button class="btn btn-success rounded-pill" @onclick="RegisterPage" style="font-weight: 600;">Register</button>
         </div>
 
-        <div class="text-center mt-4">
-            <a href="/" class="text-blue-500 hover:underline">Already have an account? Login</a>
+        <div class="text-center mt-3">
+            <a href="/" class="text-success text-decoration-underline" style="font-size: 0.9rem;">Already have an account? Login</a>
         </div>
 
         @if (!string.IsNullOrEmpty(Message))
         {
-            <div class="mt-4 p-4 rounded-lg @((Message.Contains("successful") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"))" role="alert">
+            <div class="alert @((Message.Contains("successful") ? "alert-success" : "alert-danger")) mt-3" role="alert" style="font-size: 0.9rem;">
                 @Message
             </div>
         }
@@ -79,7 +78,6 @@
             return;
         }
 
-        // creating new user and hashing that user's password
         var newUser = new User
             {
                 Username = RegisterUsername,
